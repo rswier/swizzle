@@ -45,7 +45,7 @@ void istring() {
 void ipop() {
   sp++;
 }
-void ieq() { 
+void ieq() {
   if (pc[1] == '=') {
     sp[1] = sp[1] == *sp;
     sp++;
@@ -109,7 +109,7 @@ void iback() {
   for (;;) {
     switch (*--pc) {
     case ')': level++; continue;
-    case '(': if (!level) return; level--; 
+    case '(': if (!level) return; level--;
     }
   }
 }
@@ -154,13 +154,13 @@ int main(int argc, char *argv[])
   if (argc != 2) {
     printf("usage: %s <program>\n", argv[0]);
     exit(1);
-  }  
+  }
   if (stat(argv[1], &st)) {
     printf("file not found\n");
     exit(1);
   }
 
-  program = calloc(st.st_size + 1, 1);
+  program = malloc(st.st_size + 1);
   fd = open(argv[1], O_RDONLY);
   i = read(fd, program, st.st_size);
   program[i] = 0;
