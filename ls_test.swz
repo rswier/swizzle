@@ -1,0 +1,13 @@
+"T = waitpid";
+{T 0 0 0 0 1- 61 S;;;;;}
+
+"F = fork";
+{F 57 S}
+
+"X = execv";
+{X "-c" "/bin/sh"=j &=t t j 59 S}
+
+"$ = spawn";
+{$ (F?T:X)}
+
+"ls | sort"$ 

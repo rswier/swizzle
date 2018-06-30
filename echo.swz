@@ -1,0 +1,14 @@
+"Waitpid";
+{T 0 0 0 0 1- 61S;;;;;}
+
+"Fork";
+{F 57 S}
+
+"Exec";
+{X 0 "echo hello world" "-c" "/bin/bash" & =t 0 t "/bin/bash" 59S}
+
+"Spawn";
+{Q(F?T:X)}
+
+10=i;
+(i--? i "%d " P;; Q@)
