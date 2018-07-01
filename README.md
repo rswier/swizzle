@@ -4,6 +4,26 @@ An esoteric programming language putty
 Quick Examples in our particular variant (FizzBuzz Swizzle):
 - Hello World: ```10 "Hello, World!%c" P;;```
 - Spawn Process: ```{$ (F?T:X)}``` (assuming F - Fork, T - waitpid, and X - execv)
+- FizzBuzz: 
+```
+{M
+    1=i;
+    (i 100 <=?
+        (i 15 % 0 ==?
+            "FizzBuzz" P;
+        :(i 3 % 0 ==?
+            "Fizz" P;
+        :(i 5 % 0 ==?
+            "Buzz" P;
+        :
+            i "%d" P;;
+        )))
+        10 "%c" P;;
+        i++;
+    @)
+}
+M
+```
 
 Swizzle is an interpreted language built around a very simple core loop
 that does two things, look up functions and execute them. It doesn't 
