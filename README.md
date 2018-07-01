@@ -35,7 +35,8 @@ their own functions.
 This swizzle supports:
 - inline strings using quotes: ```"..."```
 - numbers, both single digit, and multi-digit: ```1```, ```9001```
-- function definitions: ```{F <function content> }``` (in this case, F is the function's name)
+- single-letter function definitions: ```{F <function content> }``` (in this case, F is the function's name)
+- single-letter variables: ```i```
 - pre-baked syscall and printf functions: ```S``` and ```P```
 - basic math: (```+```, ```-```, ```%```)
 - conditionals and loops: ```(1 1 == ? <true> : <false> @)```   
