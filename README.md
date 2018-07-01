@@ -27,7 +27,7 @@ M
 
 Swizzle is an interpreted language built around a very simple core loop
 that does two things, look up functions and execute them. It doesn't 
-need much to bootstrap itself into a useful substrate, and almost *everything* 
+need much to bootstrap itself into a useful substrate, and *almost* everything
 is completely modular and optional. We've provided a few basic primitives to
 enable it to run fizzbuzz, make syscalls, and allow the user to define
 their own functions.
