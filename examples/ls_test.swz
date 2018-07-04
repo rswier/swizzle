@@ -7,7 +7,7 @@
 "X = execv";
 {X "-c" "/bin/sh"=j &=t t j 59 S}
 
-"$ = spawn";
-{$ (F?T:X)}
+"Q = spawn";
+{Q (F?T:X)}
 
-"ls | sort"$ 
+"ls | sort"Q 

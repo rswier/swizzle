@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <sys/syscall.h>
 #include <sys/stat.h>
+#include <dlfcn.h>
 
 #define STACK_SZ 256
 
@@ -18,8 +19,8 @@ size_t val[256] = {0};
 size_t stack[STACK_SZ+10] = {0};
 size_t *sp = &stack[STACK_SZ];
 
-char *rstack[STACK_SZ+10] = {0};
-char **rs = &rstack[STACK_SZ];
+size_t rstack[STACK_SZ+10] = {0};
+size_t *rs = &rstack[STACK_SZ];
 
 void inop() {
 }
@@ -27,12 +28,10 @@ void ivar() {
   *--sp = val[*pc];
 }
 void idigit() {
-  static size_t ia = 0;
-  ia = ia * 10 + *pc - '0';
-  if (!isdigit(pc[1])) {
-    *--sp = ia;
-    ia = 0;
-  }
+  size_t i = *pc - '0';
+  while (isdigit(pc[1]))
+    i = i*10 + *++pc - '0';
+  *--sp = i;
 }
 void istring() {
   for (*--sp = (size_t)++pc; *pc; pc++) {
@@ -46,12 +45,31 @@ void ipop() {
   sp++;
 }
 void ieq() {
-  if (pc[1] == '=') {
+  switch(pc[1]) {
+  case '=':
     sp[1] = sp[1] == *sp;
-    sp++;
     pc++;
+    break;
+  case '$':
+    *(char *)val[pc[2]] = (char)*sp;
+    pc++;
+    break;
+  case '^':
+    *(size_t *)val[pc[2]] = *sp;
+    pc++;
+    break;
+  default:
+    val[pc[1]] = *sp;
+  }
+  sp++;
+}
+void inot() {
+  if (pc[1] == '=') {
+    sp[1] = sp[1] != *sp;
+    pc++;
+    sp++;
   } else {
-    val[pc[1]] = *sp++;
+    *sp = !*sp;
   }
 }
 void igt() {
@@ -72,10 +90,6 @@ void ilt() {
   }
   sp++;
 }
-void imod() {
-  sp[1] %= *sp;
-  sp++;
-}
 void iadd() {
   if (pc[1] == '+') {
     val[pc[-1]]++;
@@ -93,6 +107,18 @@ void isub() {
     sp[1] -= *sp;
     sp++;
   }
+}
+void imul() {
+  sp[1] *= *sp;
+  sp++;
+}
+void idiv() {
+  sp[1] /= *sp;
+  sp++;
+}
+void imod() {
+  sp[1] %= *sp;
+  sp++;
 }
 void ifwd() {
   int level = 0;
@@ -118,8 +144,15 @@ void icond() {
     ifwd();
 }
 void icall() {
-  *--rs = pc;
+  *--rs = val['r'];
+  val['r'] = (size_t)pc;
   pc = (char *)val[*pc];
+}
+void iptr() {
+  *sp = *(size_t *)*sp;
+}
+void icptr() {
+  *sp = (size_t)*(char *)*sp;
 }
 void iaddr() {
   --sp;
@@ -132,18 +165,16 @@ void ifun() {
     pc++;
 }
 void iret() {
-  pc = *rs++;
+  pc = (char *)val['r'];
+  val['r'] = *rs++;
 }
-
-void xprintf() {
-  *sp = printf((char *)*sp, sp[1], sp[2], sp[3], sp[4], sp[5]);
-  fflush(stdout);
+void iremap() {
+  iset[pc[1]] = iset[pc[2]];
+  val[pc[1]] = val[pc[2]];
+  pc += 2;
 }
-void xsyscall() {
-  *sp = syscall(*sp, sp[1], sp[2], sp[3], sp[4], sp[5]);
-}
-void xexit() {
-  exit(*pc ? *sp : 0);
+void isys() {
+  *sp = ((size_t (*)())val[*pc])(*sp, sp[1], sp[2], sp[3], sp[4], sp[5]);
 }
 
 int main(int argc, char *argv[])
@@ -169,24 +200,32 @@ int main(int argc, char *argv[])
   for (i='a'; i<='z'; i++) iset[i] = ivar;
   for (i='0'; i<='9'; i++) iset[i] = idigit;
   iset['&'] = iaddr;
+  iset['^'] = iptr;
+  iset['$'] = icptr;
   iset['"'] = istring;
   iset[';'] = ipop;
   iset['='] = ieq;
+  iset['!'] = inot;
   iset['%'] = imod;
   iset['<'] = ilt;
   iset['>'] = igt;
   iset['+'] = iadd;
   iset['-'] = isub;
+  iset['*'] = imul;
+  iset['/'] = idiv;
   iset['?'] = icond;
   iset[':'] = ifwd;
   iset['@'] = iback;
   iset['{'] = ifun;
   iset['}'] = iret;
+  iset['\\']= iremap;
 
-  iset['P'] = xprintf;
-  iset['S'] = xsyscall;
-  iset['E'] = iset[0] = xexit;
-
+  iset['P'] = isys; val['P'] = (size_t)printf;
+  iset['D'] = isys; val['D'] = (size_t)dlsym;
+  iset['S'] = isys; val['S'] = (size_t)syscall;
+  iset['E'] = isys; val['E'] = (size_t)exit;
+  iset[0]   = isys; val[0]   = (size_t)exit;
+  
   for(pc = program; *pc; pc++) {
 #ifdef DEBUG
 //    printf("%d: ", (int)syscall(SYS_getpid));
