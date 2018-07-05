@@ -48,20 +48,25 @@ void ieq() {
   switch(pc[1]) {
   case '=':
     sp[1] = sp[1] == *sp;
+    sp++;
     pc++;
     break;
   case '$':
-    *(char *)val[pc[2]] = (char)*sp;
-    pc++;
+    *(char *)val[pc[2]] = (char)*sp++;
+    pc+=2;
     break;
   case '^':
-    *(size_t *)val[pc[2]] = *sp;
+    *(size_t *)val[pc[2]] = *sp++;
+    pc+=2;
+    break;
+  case '&':
+    sp = (size_t *)*sp;
     pc++;
     break;
   default:
-    val[pc[1]] = *sp;
+    val[pc[1]] = *sp++;
+    pc++;
   }
-  sp++;
 }
 void inot() {
   if (pc[1] == '=') {

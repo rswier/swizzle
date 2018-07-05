@@ -5,10 +5,10 @@
 {F 57 S}
 
 "Exec";
-{X 0 "echo hello world" "-c" "/bin/bash" & =t 0 t "/bin/bash" 59S}
+{X 0 "echo 'child  hello world'" "-c" "/bin/bash" &=t t 0 t "/bin/bash" 59S}
 
 "Spawn";
 {Q(F?T:X)}
 
-10=i;
-(i--? i "%d " P;; Q@)
+10=i
+(i--? 10 i "parent %d%c" P;;; Q@)

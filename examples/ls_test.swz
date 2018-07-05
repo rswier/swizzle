@@ -5,7 +5,7 @@
 {F 57 S}
 
 "X = execv";
-{X "-c" "/bin/sh"=j &=t t j 59 S}
+{X "-c" "/bin/sh"=jj &=t t 0 t j 59S}
 
 "Q = spawn";
 {Q (F?T:X)}
