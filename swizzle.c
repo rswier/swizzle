@@ -235,8 +235,9 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
 //    printf("%d: ", (int)syscall(SYS_getpid));
     printf("[%c] ", *pc);
-    printf("stack %d: [%p, %p, %p, %p]", sp - &stack[STACK_SZ], (size_t)*sp, (size_t)sp[1], (size_t)sp[2], (size_t)sp[3]);
+    printf("stack %ld: [%p, %p, %p, %p]", sp - &stack[STACK_SZ], (void *)*sp, (void *)sp[1], (void *)sp[2], (void *)sp[3]);
     printf("\n"); fflush(stdout);
+    if (sp - &stack[STACK_SZ] > 0) exit(9);
 #endif
     iset[*pc]();
   }
