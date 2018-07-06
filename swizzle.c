@@ -179,7 +179,7 @@ void iremap() {
   pc += 2;
 }
 void isys() {
-  *sp = ((size_t (*)())val[*pc])(*sp, sp[1], sp[2], sp[3], sp[4], sp[5]);
+  *sp = ((size_t (*)())val[*pc])(*sp, sp[1], sp[2], sp[3], sp[4], sp[5], sp[6], sp[7]);
 }
 
 int main(int argc, char *argv[])
@@ -234,6 +234,7 @@ int main(int argc, char *argv[])
   for(pc = program; *pc; pc++) {
 #ifdef DEBUG
 //    printf("%d: ", (int)syscall(SYS_getpid));
+//    printf("pc: %p", (void *)pc);
     printf("[%c] ", *pc);
     printf("stack %ld: [%p, %p, %p, %p]", sp - &stack[STACK_SZ], (void *)*sp, (void *)sp[1], (void *)sp[2], (void *)sp[3]);
     printf("\n"); fflush(stdout);
