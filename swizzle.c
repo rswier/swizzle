@@ -45,27 +45,24 @@ void ipop() {
   sp++;
 }
 void ieq() {
-  switch(pc[1]) {
+  switch(*++pc) {
   case '=':
     sp[1] = sp[1] == *sp;
     sp++;
-    pc++;
     break;
   case '$':
-    *(char *)val[pc[2]] = (char)*sp++;
-    pc+=2;
+    *(char *)*sp = (char)sp[1];
+    sp+=2;
     break;
   case '^':
-    *(size_t *)val[pc[2]] = *sp++;
-    pc+=2;
+    *(size_t *)*sp = sp[1];
+    sp+=2;
     break;
   case '&':
     sp = (size_t *)*sp;
-    pc++;
     break;
   default:
-    val[pc[1]] = *sp++;
-    pc++;
+    val[*pc] = *sp++;
   }
 }
 void inot() {
@@ -204,23 +201,23 @@ int main(int argc, char *argv[])
   for (i=0;   i<256;  i++) iset[i] = inop;
   for (i='a'; i<='z'; i++) iset[i] = ivar;
   for (i='0'; i<='9'; i++) iset[i] = idigit;
-  iset['&'] = iaddr;
-  iset['^'] = iptr;
-  iset['$'] = icptr;
   iset['"'] = istring;
   iset[';'] = ipop;
   iset['='] = ieq;
   iset['!'] = inot;
-  iset['%'] = imod;
-  iset['<'] = ilt;
   iset['>'] = igt;
+  iset['<'] = ilt;
   iset['+'] = iadd;
   iset['-'] = isub;
   iset['*'] = imul;
   iset['/'] = idiv;
-  iset['?'] = icond;
+  iset['%'] = imod;
   iset[':'] = ifwd;
   iset['@'] = iback;
+  iset['?'] = icond;
+  iset['^'] = iptr;
+  iset['$'] = icptr;
+  iset['&'] = iaddr;
   iset['{'] = ifun;
   iset['}'] = iret;
   iset['\\']= iremap;
