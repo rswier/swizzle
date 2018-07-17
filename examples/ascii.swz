@@ -1,0 +1,9 @@
+"NULSOHSTXETXEOTENQACKBELBS TABLF VT FF CR SO SI DLEDC1DC2DC3DC4NAKSYNETBCANEM SUBESCFS GS RS US "=c
+0=i
+(i32<?
+  i3*c+ i i i   "%2d %2x %2o  %.3s     " P;;;;
+  i32+ &^ &^ &^ "%d %x %o  %c     " P;;;;
+  i64+ &^ &^ &^ "%d %x %o  %c     " P;;;;
+  10 i96+ &^ &^ &^ "%3d %x %o  %c%c" P;;;;;
+  i++;
+@)
