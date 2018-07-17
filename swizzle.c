@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <fcntl.h>
-#include <sys/syscall.h>
 #include <sys/stat.h>
 #include <dlfcn.h>
 
@@ -224,13 +223,11 @@ int main(int argc, char *argv[])
 
   iset['P'] = isys; val['P'] = (size_t)printf;
   iset['D'] = isys; val['D'] = (size_t)dlsym;
-  iset['S'] = isys; val['S'] = (size_t)syscall;
   iset['E'] = isys; val['E'] = (size_t)exit;
   iset[0]   = isys; val[0]   = (size_t)exit;
   
   for(pc = program; *pc; pc++) {
 #ifdef DEBUG
-//    printf("%d: ", (int)syscall(SYS_getpid));
 //    printf("pc: %p", (void *)pc);
     printf("[%c] ", *pc);
     printf("stack %ld: [%p, %p, %p, %p]", sp - &stack[STACK_SZ], (void *)*sp, (void *)sp[1], (void *)sp[2], (void *)sp[3]);

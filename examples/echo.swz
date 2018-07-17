@@ -1,14 +1,12 @@
-"Waitpid";
-{T 0 0 0 0 1- 61S;;;;;}
-
-"Fork";
-{F 57 S}
+\FD "fork" 0 D=F;
+\WD "waitpid" 0 D=W;
+\CD "execvp" 0 D=C
 
 "Exec";
-{X 0 "echo 'child  hello world'" "-c" "/bin/bash" &=t t 0 t "/bin/bash" 59S}
+{X "echo 'child  hello world'" "-c" "/bin/bash" & &^^ C}
 
 "Spawn";
-{Q(F?T:X)}
+{Q(0F?0 0 0 1-W;;; :X)}
 
 10=i
 (i--? 10 i "parent %d%c" P;;; Q@)

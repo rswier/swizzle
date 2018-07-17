@@ -1,13 +1,11 @@
-"T = waitpid";
-{T 0 0 0 0 1- 61 S;;;;;}
+\FD "fork" 0 D=F;
+\WD "waitpid" 0 D=W;
+\CD "execvp" 0 D=C
 
-"F = fork";
-{F 57 S}
-
-"X = execv";
-{X "-c" "/bin/sh"=jj &=t t 0 t j 59S}
+"X = exec";
+{X "-c" "/bin/sh" & &^^ C}
 
 "Q = spawn";
-{Q (F?T:X)}
+{Q (0F?0 0 0 1-W;;; :X)}
 
 "ls | sort"Q 
