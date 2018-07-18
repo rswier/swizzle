@@ -1,8 +1,8 @@
 \CD "calloc" 0 D=C;
+\OD "open" 0 D=O;
 \RD "read" 0 D=R;
+\KD "lseek" 0 D=K;
 
-1000 1 C =h;
-1000 h 1 R;;;
 &&-=z
 
 (256 z C) =i;    "iset";
@@ -10,6 +10,25 @@
 ((266 z C) (256 z *) +) =s;  "stack";
 ((266 z C) (256 z *) +) =t;  "return stack";
 s=x
+
+"argc";
+=k
+
+"argv";
+=g
+
+k--;
+gz+=g
+
+g sz+ =^
+k s =^
+
+0 g^ O =d ;
+2 0 d K =q ;;
+0 0 d K;;;
+
+q1+ 1 C =h;
+q h d R;;;
 
 {] z*+^}
 {' r++;r$}
@@ -28,9 +47,10 @@ s=x
 "idigit";
 "{ 
     0=j
-    (p$ '0 >=?
-     p$ '9 <=?
-        ((j 10 *) (p$ '0 -) +) =j
+    (
+     ((j 10 *) (p$ '0 -) +) =j
+        p1+$ '0 >=?
+        p1+$ '9 <=?
         p++;
     @)
     sz-=s
@@ -150,19 +170,25 @@ s=x
 
 "icall";
 "{
-
+    tz-=t
+    v['r]t=^
+    p v'rz*+ =^
+    v[p$] =p
 }" =c
 
 "iptr";
 "{
+    s^^ s =^
 }" '^ I
 
 "icptr";
 "{
+    s^$ s =^
 }" '$ I
 
 "iaddr";
 "{
+    s sz-=s s=^
 }" '& I
 
 "ifun";
@@ -184,29 +210,47 @@ s=x
 
 "iremap";
 "{
+    i[p[2]] ip[1]z*+ =^
+    v[p[2]] vp[1]z*+ =^
+    p2+=p    
+    
 }" '\ I
 
+"isys";
+"{
+   \FD
+   v[p$]=F
+   s[7] s[6] s[5] s[4] s[3] s[2] s[1] s^ F s =^
+}" &^ 'P I
+   &^ 'D I
+   &^ 'E I
+   0 I
+
+"printf" 0 D v'Pz*+ =^;
+"dlsym"  0 D v'Dz*+ =^;
+"exit"   0 D v'Ez*+ =^;
+v['E] v =^;
 
 
-"isys XXX";
-"{ s[6] s[5] s[4] s[3] s[2] s[1] s^ P;;;;;;; }" 'P I
+{L
+    10 
+    s[3] s[2] s[1] s^ 
+    ((s z /) (x z /) -) 
+    p$ 
+    "----[%c] stack %2ld; [%p, %p, %p, %p]%c"
+    P;;;;;;;;
+}
+
 
 {f}
 h=p 
 (p$ ?
     i[p$]=f 
 
-    10 
-    s[3] s[2] s[1] s^ 
-    ((s z /) (x z /) -) p$ 
-    "----[%c] stack %2ld; [%p, %p, %p, %p]%c"
-    P;;;;;;;;
-
+    L
     f
 
     p++; 
 @)
-
-10 s^ "%d!!!%c"P;;
 
 E

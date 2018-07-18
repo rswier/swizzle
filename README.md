@@ -3,7 +3,6 @@ An esoteric programming language putty
 
 Quick Examples:
 - Hello World: ```10 "Hello, World!%c" P;;```
-- Spawn Process: ```{$ (F?T:X)}``` (assuming F - Fork, T - waitpid, and X - execv)
 - FizzBuzz: 
 ```
 {M
@@ -30,7 +29,7 @@ that does two things, look up functions and execute them. It doesn't
 need much to bootstrap itself into a useful substrate, and *almost* everything
 is completely modular and optional.
 
-This swizzle supports:
+Swizzle supports:
 - inline strings using quotes: ```"..."```
 - numbers, both single digit, and multi-digit: ```1```, ```9001```
 - single-letter function definitions: ```{F <function contents> }``` (in this case, F is the function's name)

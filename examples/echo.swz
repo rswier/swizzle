@@ -2,11 +2,14 @@
 \WD "waitpid" 0 D=W;
 \CD "execvp" 0 D=C
 
-"Exec";
-{X "echo 'child  hello world'" "-c" "/bin/bash" & &^^ C}
+"wait";
+{T 0 0 0 1-W;;;}
 
-"Spawn";
-{Q(0F?0 0 0 1-W;;; :X)}
+"exec";
+{X "-c" "/bin/sh" & &^^ C}
+
+"spawn";
+{Q 0(F?T:X)}
 
 10=i
-(i--? 10 i "parent %d%c" P;;; Q@)
+(i--? 10 i "parent %d%c" P;;; "echo 'child  hello world'" Q@)

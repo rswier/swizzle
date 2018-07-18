@@ -178,23 +178,29 @@ void isys() {
   *sp = ((size_t (*)())val[*pc])(*sp, sp[1], sp[2], sp[3], sp[4], sp[5], sp[6], sp[7]);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-  int i, fd;
-  struct stat st;
+  int i, fd, size, debug = 0;
 
-  if (argc != 2) {
-    printf("usage: %s <program>\n", argv[0]);
+  if (argc < 2) {
+    printf("usage: %s [-d] program ...\n", *argv);
     exit(1);
   }
-  if (stat(argv[1], &st)) {
+  --argc; ++argv;
+  
+  if (argc > 1 && **argv == '-' && (*argv)[1] == 'd') {
+    debug = 1;
+    --argc; ++argv;
+  }
+  if ((fd = open(*argv, O_RDONLY))<0) {
     printf("file not found\n");
     exit(1);
   }
-
-  program = malloc(st.st_size + 1);
-  fd = open(argv[1], O_RDONLY);
-  i = read(fd, program, st.st_size);
+  size = lseek(fd, 0, SEEK_END);
+  lseek(fd, 0, SEEK_SET);
+  program = malloc(size + 1);
+  
+  i = read(fd, program, size);
   program[i] = 0;
 
   for (i=0;   i<256;  i++) iset[i] = inop;
@@ -226,14 +232,19 @@ int main(int argc, char *argv[])
   iset['E'] = isys; val['E'] = (size_t)exit;
   iset[0]   = isys; val[0]   = (size_t)exit;
   
-  for(pc = program; *pc; pc++) {
-#ifdef DEBUG
-//    printf("pc: %p", (void *)pc);
-    printf("[%c] ", *pc);
-    printf("stack %ld: [%p, %p, %p, %p]", sp - &stack[STACK_SZ], (void *)*sp, (void *)sp[1], (void *)sp[2], (void *)sp[3]);
-    printf("\n"); fflush(stdout);
-    if (sp - &stack[STACK_SZ] > 0) exit(9);
-#endif
-    iset[*pc]();
-  }
+  sp[0] = argc;
+  sp[1] = (size_t) argv;
+  if (debug) {
+    for(pc = program;; pc++) {
+      printf("pc: %p", (void *)pc);
+      printf("[%c] ", *pc);
+      printf("stack %ld: [%p, %p, %p, %p]", sp - &stack[STACK_SZ], (void *)*sp, (void *)sp[1], (void *)sp[2], (void *)sp[3]);
+      printf("\n"); fflush(stdout);
+      if (sp - &stack[STACK_SZ] > 0) exit(9);
+      iset[*pc]();
+    }
+  } else {
+    for(pc = program;; pc++)
+      iset[*pc]();  
+  }  
 }
