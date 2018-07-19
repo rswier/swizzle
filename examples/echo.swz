@@ -1,6 +1,6 @@
 \FD "fork" 0 D=F;
 \WD "waitpid" 0 D=W;
-\CD "execvp" 0 D=C
+\CD "execvp" 0 D=C;
 
 "wait";
 {T 0 0 0 1-W;;;}
@@ -12,4 +12,4 @@
 {Q 0(F?T:X)}
 
 10=i
-(i--? 10 i "parent %d%c" P;;; "echo 'child  hello world'" Q@)
+(i--? 10 i "parent %d%c" P;;; 0"echo 'child  hello world'" Q @)

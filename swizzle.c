@@ -114,7 +114,8 @@ void imul() {
   sp++;
 }
 void idiv() {
-  sp[1] /= *sp;
+//  sp[1] /= *sp;
+  sp[1] = (size_t)(((long long) sp[1]) / ((long long) *sp));
   sp++;
 }
 void imod() {
@@ -236,15 +237,25 @@ int main(int argc, char **argv)
   sp[1] = (size_t) argv;
   if (debug) {
     for(pc = program;; pc++) {
-      printf("pc: %p", (void *)pc);
-      printf("[%c] ", *pc);
+      printf("pid=%d ",getpid());
+      //printf("pc: %p", (void *)pc);
+      printf("[%c%c] ", *pc,pc[1]);
       printf("stack %ld: [%p, %p, %p, %p]", sp - &stack[STACK_SZ], (void *)*sp, (void *)sp[1], (void *)sp[2], (void *)sp[3]);
       printf("\n"); fflush(stdout);
-      if (sp - &stack[STACK_SZ] > 0) exit(9);
+      if (sp - &stack[STACK_SZ] > 0 || sp - &stack[STACK_SZ] < -(STACK_SZ-10)) {
+        printf("stack blown!\n");
+        exit(9);
+      }
       iset[*pc]();
     }
   } else {
-    for(pc = program;; pc++)
+    for(pc = program;; pc++) {
+//      if (sp - &stack[STACK_SZ] > 0 || sp - &stack[STACK_SZ] < -(STACK_SZ-10)) {
+//        printf("stack blown = %ld!\n",sp - &stack[STACK_SZ]);
+//        exit(9);
+//      }
       iset[*pc]();  
-  }  
+    }
+  }
+//  printf("stack = %ld!\n",sp - &stack[STACK_SZ]);
 }

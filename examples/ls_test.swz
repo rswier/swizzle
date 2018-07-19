@@ -11,4 +11,4 @@
 "spawn";
 {Q 0(F?T:X)}
 
-"ls | sort"Q 
+0 "ls | sort"Q 
