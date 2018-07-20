@@ -44,6 +44,7 @@ q h d R;;;
   v[p$]s=^
 }"=d
 'a=j (j'z <=? dj I j++; @)
+'A=j (j'Z <=? dj I j++; @)
 
 "idigit";
 "{ 
@@ -223,16 +224,16 @@ q h d R;;;
    v[p$]=F
    s[7] s[6] s[5] s[4] s[3] s[2] s[1] s^ F s =^
    ;;;;;;;
-}" &^ 'P I
-   &^ 'D I
-   &^ 'E I
-   0 I
-
+}" &^ 'P I 'D I
+   
 "printf" 0 D v'Pz*+ =^;
 "dlsym"  0 D v'Dz*+ =^;
-"exit"   0 D v'Ez*+ =^;
-v['E] v =^
 
+"exit";
+"cycles: %ld%c"=X
+"{
+   10 m X P;;; E
+}" &^ 'E I 0 I
 
 {L
     10 
@@ -252,26 +253,11 @@ v['E] v =^
     P;;;;;;;
 }
 
-
 h=p 
-
-
-10 ((s z /) (x z /) -)  "---- stack %ld%c" P;;;
-
-L
-
-
+0=m
 {f}
-(p$ ?
-    i[p$]=f 
-
-
-
-
-    
+(   i[p$]=f 
     f
-
-    p++; 
+    p++;
+    m++;
 @)
-
-10 ((s z /) (x z /) -)  "---- stack %ld%c" P;;;

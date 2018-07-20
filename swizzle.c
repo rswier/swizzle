@@ -206,6 +206,7 @@ int main(int argc, char **argv)
 
   for (i=0;   i<256;  i++) iset[i] = inop;
   for (i='a'; i<='z'; i++) iset[i] = ivar;
+  for (i='A'; i<='Z'; i++) iset[i] = ivar;
   for (i='0'; i<='9'; i++) iset[i] = idigit;
   iset['"'] = istring;
   iset[';'] = ipop;
@@ -249,13 +250,7 @@ int main(int argc, char **argv)
       iset[*pc]();
     }
   } else {
-    for(pc = program;; pc++) {
-//      if (sp - &stack[STACK_SZ] > 0 || sp - &stack[STACK_SZ] < -(STACK_SZ-10)) {
-//        printf("stack blown = %ld!\n",sp - &stack[STACK_SZ]);
-//        exit(9);
-//      }
+    for(pc = program;; pc++)
       iset[*pc]();  
-    }
   }
-//  printf("stack = %ld!\n",sp - &stack[STACK_SZ]);
 }
