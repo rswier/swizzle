@@ -4,6 +4,7 @@ rm -f out.txt
 ./swizzle examples/ascii.swz >> out.txt
 ./swizzle examples/bf.swz >> out.txt
 ./swizzle examples/echo.swz >> out.txt
+./swizzle examples/fib.swz >> out.txt
 ./swizzle examples/fizzbuzz.swz >> out.txt
 ./swizzle examples/hello.swz >> out.txt
 ./swizzle examples/loop_test.swz >> out.txt
